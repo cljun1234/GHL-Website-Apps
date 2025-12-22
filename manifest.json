@@ -1,0 +1,18 @@
+{
+  "name": "Trustabee Widget",
+  "type": "custom-element",
+  "tagName": "trustabee-widget",
+  "icon": "https://staging-trustabee.elefity.com/favicon.ico",
+  "properties": [
+    {
+      "name": "location-id",
+      "label": "Location ID",
+      "type": "text",
+      "default": "",
+      "description": "Enter the GHL Location ID or use {{ location.id }}."
+    }
+  ],
+  "scripts": [
+    "./src/trustabee-widget.js"
+  ]
+}
