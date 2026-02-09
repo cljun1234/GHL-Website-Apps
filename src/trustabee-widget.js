@@ -29,7 +29,7 @@ class TrustabeeWidget extends HTMLElement {
     const scriptUrl = `https://staging-trustabee.elefity.com/api/widget.js?w=${encodeURIComponent(locationId)}`;
 
     // Prevent duplicate injection
-    if (document.querySelector(`script[src="${scriptUrl}"]`)) {
+    if (document.head.querySelector(`script[src="${scriptUrl}"]`)) {
       return;
     }
 
