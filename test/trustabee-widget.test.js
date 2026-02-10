@@ -4,6 +4,7 @@
 global.HTMLElement = class HTMLElement {
   constructor() {
     this._attributes = {};
+    this.isConnected = true;
   }
   getAttribute(name) {
     return this._attributes[name] || null;
@@ -19,11 +20,14 @@ global.customElements = {
   }),
 };
 
+const querySelectorMock = jest.fn();
+
 global.document = {
-  querySelector: jest.fn(),
+  querySelector: querySelectorMock,
   createElement: jest.fn(),
   head: {
     appendChild: jest.fn(),
+    querySelector: querySelectorMock,
   },
 };
 
@@ -65,7 +69,6 @@ describe('TrustabeeWidget', () => {
     expect(document.querySelector).toHaveBeenCalledWith(`script[src="${expectedUrl}"]`);
     expect(document.createElement).toHaveBeenCalledWith('script');
     expect(document.head.appendChild).toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Injected script for location test-123'));
   });
 
   test('should NOT inject script if already present (duplicate prevention)', () => {

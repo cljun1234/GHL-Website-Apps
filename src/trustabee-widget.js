@@ -18,6 +18,8 @@ class TrustabeeWidget extends HTMLElement {
   }
 
   render() {
+    if (!this.isConnected) return;
+
     const locationId = this.getAttribute('location-id');
 
     // Check if locationId is present
