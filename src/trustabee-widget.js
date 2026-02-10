@@ -38,6 +38,15 @@ class TrustabeeWidget extends HTMLElement {
     script.src = scriptUrl;
     script.async = true;
 
+    // Error handling for script loading
+    script.onload = () => {
+      console.log(`TrustabeeWidget: Script loaded successfully for location ${locationId}`);
+    };
+
+    script.onerror = () => {
+      console.error(`TrustabeeWidget: Failed to load script for location ${locationId}`);
+    };
+
     // Append to document head (or body)
     document.head.appendChild(script);
   }
