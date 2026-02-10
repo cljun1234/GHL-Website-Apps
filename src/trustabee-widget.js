@@ -40,7 +40,6 @@ class TrustabeeWidget extends HTMLElement {
 
     // Append to document head (or body)
     document.head.appendChild(script);
-    console.log(`TrustabeeWidget: Injected script for location ${locationId}`);
   }
 }
 
