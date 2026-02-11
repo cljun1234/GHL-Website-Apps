@@ -132,4 +132,19 @@ describe('TrustabeeWidget', () => {
 
     expect(renderSpy).not.toHaveBeenCalled();
   });
+
+  test('should NOT render if not connected (optimization)', () => {
+    // Simulate disconnected state
+    widget.isConnected = false;
+
+    // Set attribute to ensure it would try to render if checking proceeded
+    widget.setAttribute('location-id', 'test-opt');
+
+    widget.render();
+
+    // Verify no DOM operations occurred
+    expect(document.querySelector).not.toHaveBeenCalled();
+    expect(document.createElement).not.toHaveBeenCalled();
+    expect(document.head.appendChild).not.toHaveBeenCalled();
+  });
 });
