@@ -20,14 +20,16 @@ global.customElements = {
   }),
 };
 
-const querySelectorMock = jest.fn();
+// Create distinct mocks
+const documentQuerySelectorMock = jest.fn();
+const headQuerySelectorMock = jest.fn();
 
 global.document = {
-  querySelector: querySelectorMock,
+  querySelector: documentQuerySelectorMock,
   createElement: jest.fn(),
   head: {
     appendChild: jest.fn(),
-    querySelector: querySelectorMock,
+    querySelector: headQuerySelectorMock,
   },
 };
 
@@ -61,12 +63,13 @@ describe('TrustabeeWidget', () => {
 
   test('should inject script when location-id is set', () => {
     widget.setAttribute('location-id', 'test-123');
-    document.querySelector.mockReturnValue(null);
+    document.head.querySelector.mockReturnValue(null);
 
     widget.render();
 
     const expectedUrl = 'https://staging-trustabee.elefity.com/api/widget.js?w=test-123';
-    expect(document.querySelector).toHaveBeenCalledWith(`script[src="${expectedUrl}"]`);
+    // Expect head.querySelector to be called (optimized implementation)
+    expect(document.head.querySelector).toHaveBeenCalledWith(`script[src="${expectedUrl}"]`);
     expect(document.createElement).toHaveBeenCalledWith('script');
     expect(document.head.appendChild).toHaveBeenCalled();
   });
@@ -76,7 +79,7 @@ describe('TrustabeeWidget', () => {
     const expectedUrl = 'https://staging-trustabee.elefity.com/api/widget.js?w=test-123';
 
     // Mock that the script already exists in DOM
-    document.querySelector.mockImplementation((selector) => {
+    document.head.querySelector.mockImplementation((selector) => {
       if (selector === `script[src="${expectedUrl}"]`) {
         return { src: expectedUrl };
       }
@@ -99,21 +102,21 @@ describe('TrustabeeWidget', () => {
   test('should inject different scripts for different location-ids', () => {
     // First location
     widget.setAttribute('location-id', 'loc-1');
-    document.querySelector.mockReturnValue(null);
+    document.head.querySelector.mockReturnValue(null);
     widget.render();
 
     const url1 = 'https://staging-trustabee.elefity.com/api/widget.js?w=loc-1';
-    expect(document.querySelector).toHaveBeenCalledWith(`script[src="${url1}"]`);
+    expect(document.head.querySelector).toHaveBeenCalledWith(`script[src="${url1}"]`);
     expect(document.head.appendChild).toHaveBeenCalledTimes(1);
 
     // Second location
     const widget2 = new global.TrustabeeWidgetClass();
     widget2.setAttribute('location-id', 'loc-2');
-    document.querySelector.mockReturnValue(null);
+    document.head.querySelector.mockReturnValue(null);
     widget2.render();
 
     const url2 = 'https://staging-trustabee.elefity.com/api/widget.js?w=loc-2';
-    expect(document.querySelector).toHaveBeenCalledWith(`script[src="${url2}"]`);
+    expect(document.head.querySelector).toHaveBeenCalledWith(`script[src="${url2}"]`);
     expect(document.head.appendChild).toHaveBeenCalledTimes(2);
   });
 
@@ -144,6 +147,7 @@ describe('TrustabeeWidget', () => {
 
     // Verify no DOM operations occurred
     expect(document.querySelector).not.toHaveBeenCalled();
+    expect(document.head.querySelector).not.toHaveBeenCalled();
     expect(document.createElement).not.toHaveBeenCalled();
     expect(document.head.appendChild).not.toHaveBeenCalled();
   });
