@@ -18,6 +18,7 @@ class TrustabeeWidget extends HTMLElement {
   }
 
   render() {
+    // Optimization: Prevent execution if the element is not connected to the DOM
     if (!this.isConnected) return;
 
     const locationId = this.getAttribute('location-id');
